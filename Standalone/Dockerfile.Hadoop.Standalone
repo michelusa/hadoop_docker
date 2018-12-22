@@ -1,0 +1,20 @@
+FROM ubuntu:19.04
+
+#add haddopp dependencies and clean
+RUN apt-get update  && \
+        apt-get -y install ssh vim sudo openssh-server openjdk-8-jdk && \
+        apt-get -y autoclean
+
+RUN ["useradd", "-m", "hadoop"]
+ARG H_HOME=/home/hadoop/
+ARG H_ARCH=hadoop-3.0.3.tar.gz
+COPY $H_ARCH  $H_HOME
+
+USER hadoop
+WORKDIR $H_HOME
+RUN tar -xf $H_ARCH
+RUN rm $H_ARCH
+
+COPY hadoop-env.sh $H_HOME/hadoop-3.0.3/etc/hadoop/
+
+

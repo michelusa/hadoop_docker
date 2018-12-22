@@ -1,0 +1,5 @@
+Hadoop standalone in a docker container
+---------------------------------------
+docker build -t hadoop.standalone  . -f Dockerfile.Hadoop.Standalone
+docker run --rm -it hadoop.standalone /bin/bash
+
