@@ -1,0 +1,5 @@
+Hadoop pseudo cluster in a docker container
+---------------------------------------
+docker build -t hadoop.pseudocluster . -f Dockerfile.Hadoop.PseudoCluster
+docker run --rm -p 9870:9870 -it hadoop.pseudocluster /bin/bash
+
