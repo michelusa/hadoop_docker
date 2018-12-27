@@ -1,0 +1,38 @@
+FROM ubuntu:19.04
+
+#add haddopp dependencies and clean
+RUN apt-get update  && \
+        apt-get -y install rsync ssh vim sudo openssh-server openjdk-8-jdk && \
+        apt-get -y autoclean
+RUN service ssh start
+
+RUN ["useradd", "-m", "hadoop", "-p", ""]
+RUN echo 'hadoop ALL=(ALL:ALL) ALL' >> /etc/sudoers
+ARG H_HOME=/home/hadoop/
+ARG H_ARCH=hadoop-3.0.3.tar.gz
+COPY $H_ARCH  $H_HOME
+
+USER hadoop
+WORKDIR $H_HOME
+RUN tar -xf $H_ARCH
+RUN rm $H_ARCH
+
+ARG H_FOLDER=hadoop-3.0.3
+ENV HADOOP_HOME=$H_HOME/$H_FOLDER
+COPY hadoop-env.sh $HADOOP_HOME/etc/hadoop/
+#pseudo-cleuster
+COPY core-site.xml $HADOOP_HOME/etc/hadoop/
+COPY hdfs-site.xml $HADOOP_HOME/etc/hadoop/
+
+COPY mapred-site.xml $HADOOP_HOME/etc/hadoop/
+COPY yarn-site.xml $HADOOP_HOME/etc/hadoop/
+
+RUN ssh-keygen -t rsa -P '' -f $H_HOME.ssh/id_rsa
+RUN cat $H_HOME/.ssh/id_rsa.pub > $H_HOME/.ssh/authorized_keys
+RUN chmod 0600 $H_HOME/.ssh/authorized_keys
+
+WORKDIR $HADOOP_HOME
+COPY --chown=hadoop start.sh $HADOOP_HOME/ 
+EXPOSE 9870
+EXPOSE 8088
+CMD $HADOOP_HOME/start.sh

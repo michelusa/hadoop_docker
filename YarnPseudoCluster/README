@@ -1,0 +1,9 @@
+Hadoop yarn pseudo cluster in a docker container
+-------------------------------------------------
+docker build -t hadoop.yarn.pseudocluster . -f Dockerfile.Hadoop.Yarn.PseudoCluster
+docker run --rm -p 8088:8088 -p 9870:9870 -it hadoop.yarn.pseudocluster 
+
+
+
+example: bin/yarn jar /home/hadoop/hadoop-3.0.3/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.0.3.jar pi 2 5
+
